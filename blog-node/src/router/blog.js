@@ -1,4 +1,4 @@
-const { getList } = require('../controller/blog')
+const { getList, getDetail } = require('../controller/blog')
 const { SuccessModel, ErrorModel } = require('../model/resModel')
 
 
@@ -15,9 +15,9 @@ const blogRouterHandler = (req, res) => {
 
   //get blog detail
   if(method === "GET" && req.path === "/api/blog/detail"){
-    return {
-      msg: "This is for getting blog detail"
-    }
+    const id = req.query.id;
+    const data = getDetail(id);
+    return new SuccessModel(data);
   }
 
   //create a new blog

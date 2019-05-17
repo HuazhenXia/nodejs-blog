@@ -60,8 +60,6 @@ const serverHandler = (req, res) => {
       return;
     }
 
-    
-
     //404
     res.writeHead(404, {"Content-type": "text/plain"});
     res.write("404 Not Found");

@@ -7,7 +7,7 @@ con.connect();
 
 function exec(sql){
   return new Promise((resolve, reject) => {
-    connect.query(query, (err, result) => {
+    con.query(sql, (err, result) => {
       if(err){
         reject(err);
         return;

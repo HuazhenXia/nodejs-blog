@@ -5,7 +5,7 @@ const {
   updateBlog,
   deleteBlog
 } = require('../controller/blog')
-const { SuccessModel, ErrorModel } = require('../model/resModel')
+const { SuccessModel, ErrorModel } = require('../model/resModel');
 
 
 const blogRouterHandler = (req, res) => {
@@ -16,8 +16,13 @@ const blogRouterHandler = (req, res) => {
   if(method === "GET" && req.path === "/api/blog/list"){
     const author = req.query.author || '';
     const keyword = req.query.keyword || '';
-    const listData = getList(author, keyword)
-    return new SuccessModel(listData);
+    // const listData = getList(author, keyword)
+    // return new SuccessModel(listData);
+    const result = getList(author, keyword);
+    return result.then(listData => {
+      return new SuccessModel(listData);
+    })
+
   }
 
   //get blog detail

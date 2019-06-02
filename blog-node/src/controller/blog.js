@@ -15,21 +15,26 @@ const getList = (author, keyword) => {
 }
 
 const getDetail = (id) => {
-  //use fake data by now, change later
-  return {
-    id: 1,
-    title: "title A",
-    content: "content A",
-    createTime: 1546610491100,
-    author: "Lily"
-  }
+  let sql = `select * from blogs where id='${id}'`
+  return exec(sql).then(rows => rows[0])
 }
 
 const newBlog = (blogData = {}) => {
-  console.log('new blog data: ', blogData)
-  return {
-    id: 3
-  }
+  const title = blogData.title;
+  const content = blogData.content;
+  const author = blogData.author;
+  const createTime = Date.now();
+
+  const sql = `
+      insert into blogs (title, content, createtime, author)
+      value ('${title}', '${content}', ${createTime}, '${author}')
+  `
+  return exec(sql).then(insertData => {
+    console.log(insertData)
+    return {
+      id: insertData.insertId
+    }
+  })
 }
 
 const updateBlog = (id, blogData = {}) => {

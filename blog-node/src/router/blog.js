@@ -27,15 +27,20 @@ const blogRouterHandler = (req, res) => {
 
   //get blog detail
   if(method === "GET" && req.path === "/api/blog/detail"){
-    const data = getDetail(id);
-    return new SuccessModel(data);
+    const result = getDetail(id);
+    return result.then(data => {
+      return new SuccessModel(data)
+    });
   }
 
   //create a new blog
   if(method === "POST" && req.path === "/api/blog/new"){
     const blogData = req.body;
-    const data = newBlog(blogData);
-    return new SuccessModel(data);
+    blogData.author = "Me"; // change when finish logining
+    const result = newBlog(blogData);
+    return result.then(data => {
+      return new SuccessModel(data)
+    })
   }
 
   //update a blog

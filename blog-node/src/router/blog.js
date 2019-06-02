@@ -46,15 +46,22 @@ const blogRouterHandler = (req, res) => {
   //update a blog
   if(method === "POST" && req.path === "/api/blog/update"){
     const result = updateBlog(id, req.body);
-    if(result) return new SuccessModel();
-    else return new ErrorModel("Fail to update blog")
+    
+    return result.then(val => {
+      if(val) return new SuccessModel();
+      else return new ErrorModel("Fail to update blog")
+    })
   }
 
   //delete a blog
   if(method === "POST" && req.path === "/api/blog/delete"){
-    const result = deleteBlog(id);
-    if(result) return new SuccessModel();
-    else return new ErrorModel("Fail to delete blog")
+    const author = "Me" //fake data
+    const result = deleteBlog(id, author);
+
+    return result.then(val => {
+      if(val) return new SuccessModel();
+      else return new ErrorModel("Fail to delete blog")
+    })
   }
 }
 

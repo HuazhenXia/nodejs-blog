@@ -62,11 +62,21 @@ const serverHandler = (req, res) => {
 
 
     //user router
-    const userData = userRouterHandler(req, res)
-    if(userData){
-      res.end(JSON.stringify(userData))
-      return;
+    // const userData = userRouterHandler(req, res)
+    // if(userData){
+    //   res.end(JSON.stringify(userData))
+    //   return;
+    // }
+
+    const userResult = userRouterHandler(req, res)
+    if(userResult){
+      userResult.then(userData =>{
+        res.end( JSON.stringify(userData) )
+      })
+
+      return
     }
+    
 
     //404
     res.writeHead(404, {"Content-type": "text/plain"});

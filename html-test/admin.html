@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Management</title>
+    <style type="text/css">
+        body {
+            margin: 0 20px;
+            line-height: 1;
+        }
+        a {
+            text-decoration-line: none;
+            cursor: pointer;
+        }
+        table {
+            border: 1px solid #ccc;
+        }
+        table th {
+            text-align: left;
+            background-color: #f1f1f1;
+        } 
+        table td:nth-child(1) {
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="border-bottom: 1px solid #ccc; padding-bottom: 10px;">Center</h1>
+    <p>
+        <a href="/new.html">Create</a>
+    </p>
+    <div style="margin-bottom: 10px;">
+        <input id="text-keyword">
+        <button id="btn-search">Search</button>
+    </div>
+    <table id="table-container">
+        <tr>
+            <th>Title</th>
+            <th colspan="2">Operation</th>
+        </tr>
+    </table>
+
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+    <script>
+        // get request
+        function get(url) {
+            return $.get(url)
+        }
+
+        // post request
+        function post(url, data = {}) {
+            return $.ajax({
+                type: 'post',
+                url,
+                data: JSON.stringify(data),
+                contentType: "application/json",
+            })
+        }
+
+        // get url params
+        function getUrlParams() {
+            let paramStr = location.href.split('?')[1] || ''
+            paramStr = paramStr.split('#')[0]
+            const result = {}
+            paramStr.split('&').forEach(itemStr => {
+                const arr = itemStr.split('=')
+                const key = arr[0]
+                const val = arr[1]
+                result[key] = val
+            })
+            return result
+        }
+
+        // get dom
+        const $textKeyword = $('#text-keyword')
+        const $btnSearch = $('#btn-search')
+        const $tableContainer = $('#table-container')
+
+        let url = '/api/blog/list?isadmin=1'  // add isadmin=1
+        const urlParams = getUrlParams()
+        if (urlParams.keyword) {
+            url += '&keyword=' + urlParams.keyword
+        }
+
+        // load data
+        get(url).then(res => {
+            if (res.errno !== 0) {
+                alert('数据错误')
+                return
+            }
+
+            // show data
+            const data = res.data || []
+            data.forEach(item => {
+                $tableContainer.append($(`
+                    <tr>
+                        <td>
+                            <a href="/detail.html?id=${item.id}" target="_blank">${item.title}</a>
+                        </td>
+                        <td>
+                            <a href="/edit.html?id=${item.id}">Edit</a>
+                        </td>
+                        <td>
+                            <a data-id="${item.id}" class="item-del">Delete</a>
+                        </td>
+                    </tr>
+                `))
+            })
+        })
+
+        // search
+        $btnSearch.click(() => {
+            const keyword = $textKeyword.val()
+            location.href = '/admin.html?keyword=' + keyword
+        })
+
+        // Delete
+        $tableContainer.click(e => {
+            const $target = $(e.target)
+            if ($target.hasClass('item-del') === false) {
+                return
+            }
+
+            if (confirm('Delete？')) {
+                const url = '/api/blog/del?id=' + $target.attr('data-id')
+                post(url).then(res => {
+                    if (res.errno !== 0) {
+                        alert('Wrong operation!')
+                        return
+                    }
+                    location.href = location.href
+                })
+            }
+        })
+
+    </script>
+</body>
+</html>
